@@ -11,12 +11,22 @@ def main(page: ft.Page):
 
     #Criar funções
     def calcular_idade(e):
+        global conta
         data_nascimento = datetime.strptime(input_nascimento.value, "%d/%m/%Y")
-        data_atual = datetime.now()
+        data_atual = datetime.today()
         data_atual_str = data_atual.strftime("%d/%m/%Y")
-        idade = int(str(data_atual.year - data_nascimento.year))
+        idade = int(str((data_atual.year - data_nascimento.year)))
+        mes_atual = datetime.today().month
+        dia_atual = datetime.today().day
 
         try:
+            if mes_atual < data_nascimento.month:
+                idade = idade - 1
+
+            elif mes_atual == data_nascimento.month:
+                if dia_atual < data_nascimento.day:
+                    idade = idade - 1
+
             if idade > 0 and idade < 120:
                 if idade >= 18:
                     txt_resultado.value = f"Ele tem {idade} anos, então é maior de idade"
@@ -28,7 +38,7 @@ def main(page: ft.Page):
                     txt_resultado.value = "Idade inválida!"
 
             else:
-                txt_resultado.value = "Informações inválidas!"
+                txt_resultado.value = "Informação inválida"
 
         except ValueError:
             txt_resultado.value = "Data inválida"
