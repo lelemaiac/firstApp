@@ -17,14 +17,18 @@ def main(page: ft.Page):
         idade = int(str(data_atual.year - data_nascimento.year))
 
         try:
-            if idade >= 18:
-                txt_resultado.value = f"Ele tem {idade} anos, então é maior de idade"
+            if idade > 0 and idade < 120:
+                if idade >= 18:
+                    txt_resultado.value = f"Ele tem {idade} anos, então é maior de idade"
 
-            elif idade < 18:
-                txt_resultado.value = f"Ele tem {idade} anos, então é menor de idade"
+                elif idade < 18:
+                    txt_resultado.value = f"Ele tem {idade} anos, então é menor de idade"
+
+                else:
+                    txt_resultado.value = "Idade inválida!"
 
             else:
-                txt_resultado.value = "Idade inválida!"
+                txt_resultado.value = "Informações inválidas!"
 
         except ValueError:
             txt_resultado.value = "Data inválida"
