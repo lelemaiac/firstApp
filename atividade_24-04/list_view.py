@@ -23,7 +23,16 @@ def main(page: ft.Page):
             page.overlay.append(msg_error)
             msg_error.open= True
             page.update()
+
         else:
+            salario = input_salario.value
+
+            if not salario.isnumeric():
+                input_salario.error = True
+                input_salario.error_text = "Preencha este campo com números inteiros"
+                page.update()
+                return
+
             objeto_usuario = usuario(
                 nome=input_nome.value,
                 profissao=input_profissao.value,
