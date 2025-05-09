@@ -11,8 +11,6 @@ def main(page: ft.Page):
     page.window.width = 375
     page.window.height = 667
 
-    # Funções
-    lista = []
 
     def salvar(e):
         if input_nome.value == "" or input_profissao.value == "" or input_salario.value == "":
@@ -44,17 +42,33 @@ def main(page: ft.Page):
             page.update()
 
 
-    def exibir_lista(e):
-        lv.controls.clear()
-        sql_usuario = select(Usuario)
-        resultado_usuarios = db_session.execute(sql_usuario).scalars()
-        lista_livros = []
-        for usuarios in resultado_usuarios:
-            lista_livros.append(usuarios.serialize_user())
-            lv.controls.append(
-                ft.Text(value=f'Nome: {usuarios.nome}, Salário: {usuarios.salario}, Profissao: {usuarios.profissao}')
-            )
+    def detalhes(nome, profissao, salario):
+        txt_nome.value = nome
+        txt_profissao.value = profissao
+        txt_salario.value = salario
+
         page.update()
+        page.go("/detalhes_usuarios")
+
+    def usuarios(e):
+        lv.controls.clear()
+        sql_usuarios = select(Usuario)
+        resultado_usuario = db_session.execute(sql_usuarios).scalars()
+
+        for usuario in resultado_usuario:
+            lv.controls.append(
+                ft.ListTile(
+                    leading=ft.Icon(ft.Icons.PERSON),
+                    title=ft.Text(f'Nome: {usuario.nome}'),
+                    trailing=ft.PopupMenuButton(
+                        icon=ft.Icons.MORE_VERT,
+                        items=[
+                            ft.PopupMenuItem(text="DETALHES", on_click=lambda _, u=usuario: detalhes(u.nome, u.profissao, u.salario)),
+                        ]
+                    )
+                )
+            )
+
 
     def gerencia_rotas(e):
         page.views.clear()
@@ -72,23 +86,38 @@ def main(page: ft.Page):
                     ),
                     ft.Button(
                         "Exibir lista",
-                        on_click=lambda _: page.go("/segunda")
+                        on_click=lambda _: page.go("/lista_usuarios")
                     )
                 ],
             )
         )
-        if page.route == "/segunda":
-            exibir_lista(e)
+        if page.route == "/lista_usuarios" or page.route == "/detalhes_usuarios":
+            usuarios(e)
             page.views.append(
                 View(
-                    "/segunda",
+                    "/lista_usuarios",
                     [
-                        AppBar(title=Text("Segunda tela"), bgcolor=Colors.SECONDARY_CONTAINER),
+                        AppBar(title=Text("Lista"), bgcolor=Colors.SECONDARY_CONTAINER),
                         lv,
                     ],
                 )
             )
+
+        if page.route == "/detalhes_usuarios":
+            page.views.append(
+                View(
+                    "/detalhes_livros",
+                    [
+                        AppBar(title=Text("Detalhes"), bgcolor=Colors.SECONDARY_CONTAINER),
+                        txt_nome,
+                        txt_profissao,
+                        txt_salario,
+                    ]
+                )
+            )
         page.update()
+
+
 
     def voltar(e):
         page.views.pop()
@@ -114,6 +143,11 @@ def main(page: ft.Page):
         bgcolor=Colors.RED,
         content=ft.Text("Dados não inseridos não podem ser salvos")
     )
+
+    txt_nome = ft.Text()
+    txt_profissao = ft.Text()
+    txt_salario = ft.Text()
+
 
     # Eventos
     page.on_route_change = gerencia_rotas
