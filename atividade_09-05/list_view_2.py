@@ -1,13 +1,8 @@
 import flet as ft
 from flet import AppBar, Text, View
 from flet.core.colors import Colors
+from models import *
 
-
-class usuario():
-    def __init__(self, nome, salario, profissao):
-        self.nome = nome
-        self.salario = salario
-        self.profissao = profissao
 
 def main(page: ft.Page):
     # Configurações
@@ -34,13 +29,13 @@ def main(page: ft.Page):
                 page.update()
                 return
 
-            objeto_usuario = usuario(
+            objeto_usuario = Usuario(
                 nome=input_nome.value,
                 profissao=input_profissao.value,
                 salario=input_salario.value
             )
 
-            lista.append(objeto_usuario)
+            objeto_usuario.save()
             input_nome.value = ''
             input_salario.value = ""
             input_profissao.value = ""
@@ -51,7 +46,11 @@ def main(page: ft.Page):
 
     def exibir_lista(e):
         lv.controls.clear()
-        for usuarios in lista:
+        sql_usuario = select(Usuario)
+        resultado_usuarios = db_session.execute(sql_usuario).scalars()
+        lista_livros = []
+        for usuarios in resultado_usuarios:
+            lista_livros.append(usuarios.serialize_user())
             lv.controls.append(
                 ft.Text(value=f'Nome: {usuarios.nome}, Salário: {usuarios.salario}, Profissao: {usuarios.profissao}')
             )
