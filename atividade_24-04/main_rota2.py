@@ -42,6 +42,7 @@ def main(page: ft.Page):
             msg_sucesso.open = True
             page.update()
 
+
     def exibir_lista(e):
         lv.controls.clear()
         for livros in lista:

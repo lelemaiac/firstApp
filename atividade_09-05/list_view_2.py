@@ -106,7 +106,7 @@ def main(page: ft.Page):
         if page.route == "/detalhes_usuarios":
             page.views.append(
                 View(
-                    "/detalhes_livros",
+                    "/detalhes_usuarios",
                     [
                         AppBar(title=Text("Detalhes"), bgcolor=Colors.SECONDARY_CONTAINER),
                         txt_nome,
